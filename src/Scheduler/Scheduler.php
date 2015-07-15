@@ -31,6 +31,7 @@ class Scheduler {
     public function add( $dateTimeStr )
     {
         $this->oneTimeEvents[] = new \DateTime($dateTimeStr);
+	    return $this;
     }
 
     /**
@@ -41,6 +42,7 @@ class Scheduler {
     public function addRecurring( $dateTimeStr )
     {
         $this->schedules[] = $dateTimeStr;
+	    return $this;
     }
 
 
