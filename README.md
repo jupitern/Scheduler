@@ -61,6 +61,6 @@ output:
 
 ## License
 
-jupitern/table is release under the MIT license.
+jupitern/scheduler is release under the MIT license.
 
 You are free to use, modify and distribute this software, as long as the copyright header is left intact
