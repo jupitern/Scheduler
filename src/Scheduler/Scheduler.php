@@ -1,6 +1,6 @@
 <?php
 
-namespace Jupitern\Table;
+namespace Jupitern\Scheduler;
 
 /*
  * Simple Scheduler class
