@@ -2,6 +2,12 @@
 
 namespace Jupitern\Table;
 
+/*
+ * Simple Scheduler class
+ *
+ * Author: Nuno Chaves
+ * */
+
 class Scheduler {
 
     private $schedules = array();

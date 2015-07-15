@@ -22,7 +22,7 @@ Include jupitern/datatables in your project, by adding it to your composer.json 
 ## Usage
 ```php
 // instance Scheduler
-$schedules = \Lib\Dispatcher\Scheduler::instance()
+$schedules = \Jupitern\Scheduler::instance()
 
 // add a one time event date
 // accepts any string compatible with php DateTime object
