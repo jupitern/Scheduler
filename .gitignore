@@ -1,0 +1,15 @@
+# temp files from editors
+*~
+*.bak
+.DS_Store
+Thumbs.db
+.buildpath
+.project
+.settings
+*.tmproj
+build
+.idea
+composer.phar
+nbproject/
+vendor/
+examples/db.php
