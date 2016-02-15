@@ -10,7 +10,7 @@ PHP 5.4 or higher.
 
 ## Installation
 
-Include jupitern/datatables in your project, by adding it to your composer.json file.
+Include jupitern/scheduler in your project, by adding it to your composer.json file.
 ```javascript
 {
     "require": {
@@ -63,4 +63,4 @@ output:
 
 jupitern/scheduler is release under the MIT license.
 
-You are free to use, modify and distribute this software, as long as the copyright header is left intact
+You are free to use, modify and distribute this software
