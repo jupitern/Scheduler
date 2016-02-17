@@ -1,0 +1,31 @@
+{
+    "name"       : "jupitern/scheduler",
+    "description": "php event schedule",
+    "keywords"   : ["scheduler", "event"],
+    "homepage"   : "https://github.com/jupitern/scheduler",
+    "license"    : "MIT",
+    "authors"    : [
+        {
+            "name"    : "Nuno Chaves",
+            "email"   : "nunochaves@sapo.pt",
+            "role"    : "Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/jupitern/scheduler",
+        "issues": "https://github.com/jupitern/scheduler/issues"
+    },
+    "require"    :{
+        "php":">=5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jupitern\\Scheduler\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+
+        }
+    }
+}
