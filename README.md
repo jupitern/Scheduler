@@ -14,11 +14,7 @@ Include jupitern/scheduler in your project, by adding it to your composer.json f
 ```javascript
 {
     "require": {
-<<<<<<< HEAD
-        "jupitern/scheduler": "0.*"
-=======
         "jupitern/scheduler": "1.*"
->>>>>>> 47ba5e8368b0b9d115957248417dca6ac84c9907
     }
 }
 ```
