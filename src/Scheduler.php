@@ -74,7 +74,11 @@ class Scheduler {
         foreach ($this->schedules as $schedule) {
             $d = new \DateTime($fromDateStr);
             for ($i=0; $i < $limit; ++$i) {
-                $dates[] = clone $d->modify($schedule);
+                $newDate = clone $d;
+                if ($newDate->modify($schedule) > $d) {
+                    $dates[] = $newDate;
+                }
+                $d->modify($schedule);
             }
         }
 
