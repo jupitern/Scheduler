@@ -22,7 +22,7 @@ Include jupitern/scheduler in your project, by adding it to your composer.json f
 ## Usage
 ```php
 // instance Scheduler
-$schedules = \Jupitern\Scheduler::instance()
+$schedules = \Jupitern\Scheduler\Scheduler::instance()
 
 // add a one time event date
 // accepts any string compatible with php DateTime object
@@ -37,11 +37,11 @@ $schedules = \Jupitern\Scheduler::instance()
 ->addRecurring('+ 8 hours')
 
 // get next 5 schedules starting at 2020-01-01
-->getNextSchedules('2020-01-01 00:00:00', 5);
+->getNextSchedules('2020-01-01 00:00:00', 10);
 
 // display schedules
 foreach ($schedules as $schedule) {
-    echo $schedule->format('Y-m-d H:i').PHP_EOL;
+    echo $schedule->format('Y-m-d H:i')."<br/>;
 }
 
 /*
@@ -50,7 +50,12 @@ output:
 2020-01-01 12:35
 2020-01-01 16:00
 2020-01-01 17:50
-2020-01-01 00:00
+2020-01-02 00:00
+2020-01-02 08:00
+2020-01-02 16:00
+2020-01-03 00:00
+2020-01-03 08:00
+2020-01-03 16:00
 */
 
 ```
