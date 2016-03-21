@@ -41,7 +41,7 @@ $schedules = \Jupitern\Scheduler\Scheduler::instance()
 
 // display schedules
 foreach ($schedules as $schedule) {
-    echo $schedule->format('Y-m-d H:i')."<br/>;
+    echo $schedule->format('Y-m-d H:i')."<br/>";
 }
 
 /*
