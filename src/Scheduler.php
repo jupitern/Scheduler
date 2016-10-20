@@ -12,7 +12,8 @@ class Scheduler {
 
     private $schedules = array();
     private $oneTimeEvents = array();
-
+    private $startTime = null;
+    private $endTime = null;
 
     /**
      * @return static
@@ -24,6 +25,25 @@ class Scheduler {
 
 
     /**
+     * set a time frame in which events will occur
+     *
+     * @param string $startTime \Datetime start time string compatible with php Datetime class
+     * @param string $endTime \Datetime end time string compatible with php Datetime class
+     */
+    public function setTimeFrame( $startTime = null, $endTime = null )
+    {
+        if ($startTime != null ){
+            $this->startTime = new \DateTime($startTime);
+        }
+        if ($endTime != null) {
+            $this->endTime = new \DateTime($endTime);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * add a one time occurring date
      *
      * @param string $dateTimeStr \Datetime object valid date string
@@ -31,7 +51,7 @@ class Scheduler {
     public function add( $dateTimeStr )
     {
         $this->oneTimeEvents[] = new \DateTime($dateTimeStr);
-	    return $this;
+        return $this;
     }
 
     /**
@@ -42,7 +62,7 @@ class Scheduler {
     public function addRecurring( $dateTimeStr )
     {
         $this->schedules[] = $dateTimeStr;
-	    return $this;
+        return $this;
     }
 
 
@@ -68,14 +88,18 @@ class Scheduler {
      */
     public function getNextSchedules( $fromDateStr = 'now', $limit = 5 )
     {
-        $dates = $this->oneTimeEvents;
-        if (!count($this->schedules)) return $dates;
+        $dates = array();
+        foreach ($this->oneTimeEvents as $evt) {
+            if ($this->isInTimeFrame($evt)) {
+                $dates[] = $evt;
+            }
+        }
 
         foreach ($this->schedules as $schedule) {
             $d = new \DateTime($fromDateStr);
             for ($i=0; $i < $limit; ++$i) {
                 $newDate = clone $d;
-                if ($newDate->modify($schedule) > $d) {
+                if ($newDate->modify($schedule) > $d && $this->isInTimeFrame($newDate)) {
                     $dates[] = $newDate;
                 }
                 $d->modify($schedule);
@@ -88,13 +112,31 @@ class Scheduler {
 
 
     /**
-     * @param $dates
+     * @param array $dates
      */
     private function orderDates( &$dates )
     {
         uasort($dates, function($a, $b) {
             return strtotime($a->format('Y-m-d H:i:s')) > strtotime($b->format('Y-m-d H:i:s')) ? 1 : -1;
         });
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    private function isInTimeFrame(\DateTime $date)
+    {
+        $dtStart = $this->startTime->modify($date->format('Y-m-d'));
+        $dtEnd = $this->endTime->modify($date->format('Y-m-d'));
+
+        if ($this->startTime instanceof \DateTime && $date < $this->startTime->modify($date->format('Y-m-d'))) {
+            return false;
+        }
+        if ($this->endTime instanceof \DateTime && $date > $this->endTime->modify($date->format('Y-m-d'))) {
+            return false;
+        }
+
+        return true;
     }
 
 }

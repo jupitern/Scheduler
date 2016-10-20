@@ -24,6 +24,9 @@ Include jupitern/scheduler in your project, by adding it to your composer.json f
 // instance Scheduler
 $schedules = \Jupitern\Scheduler\Scheduler::instance()
 
+// limit events from 08.00 am to 17.00 pm
+->setTimeFrame('08:00', '17:00')
+
 // add a one time event date
 // accepts any string compatible with php DateTime object
 ->add('2020-01-01 12:35')
