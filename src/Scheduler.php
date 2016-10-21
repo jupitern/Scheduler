@@ -94,28 +94,30 @@ class Scheduler {
                 $dates[] = $evt;
             }
         }
-
         foreach ($this->schedules as $schedule) {
             $d = new \DateTime($fromDateStr);
+            // check if current date is outside of defined time frame
+            if ($this->startTime instanceof \DateTime && $d < $this->startTime) {
+                $d = clone $this->startTime;
+            }
 
             for ($i=0; $i < $limit; ++$i) {
                 $newDate = clone $d;
-
-                // check if current date is outside of defined time frame
-                if ($this->startTime instanceof \DateTime && $newDate < $this->startTime) {
-                    $newDate = $this->startTime;
-                }
-                if ($this->endTime instanceof \DateTime && $newDate > $this->endTime) {
-                    $newDate = $this->startTime->modify('next day');
-                }
 
                 if ($newDate->modify($schedule) > $d) {
                     $dates[] = $newDate;
                 }
                 $d->modify($schedule);
+
+                // check if current date is outside of defined time frame
+                if ($this->endTime instanceof \DateTime && $d > $this->endTime) {
+                    $this->startTime->modify('next day');
+                    $this->endTime->modify('next day');
+                    $d->modify('next day');
+                    $d = clone $this->startTime;
+                }
             }
         }
-
         $this->orderDates($dates);
         return array_slice($dates, 0, $limit);
     }
