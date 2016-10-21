@@ -27,12 +27,12 @@ class Scheduler {
     /**
      * set a time frame in which events will occur
      *
-     * @param string $startTime \Datetime start time string compatible with php Datetime class
-     * @param string $endTime \Datetime end time string compatible with php Datetime class
+     * @param string $startTime \Datetime start time string compatible with php Datetime class. example: '08:00'
+     * @param string $endTime \Datetime end time string compatible with php Datetime class. example: '17:00'
      */
     public function setTimeFrame( $startTime = null, $endTime = null )
     {
-        if ($startTime != null && !empty($startTime)){
+        if ($startTime != null && !empty($startTime)) {
             $this->startTime = new \DateTime($startTime);
         }
         if ($endTime != null && !empty($endTime)) {
@@ -97,9 +97,19 @@ class Scheduler {
 
         foreach ($this->schedules as $schedule) {
             $d = new \DateTime($fromDateStr);
+
             for ($i=0; $i < $limit; ++$i) {
                 $newDate = clone $d;
-                if ($newDate->modify($schedule) > $d && $this->isInTimeFrame($newDate)) {
+
+                // check if current date is outside of defined time frame
+                if ($this->startTime instanceof \DateTime && $newDate < $this->startTime) {
+                    $newDate = $this->startTime;
+                }
+                if ($this->endTime instanceof \DateTime && $newDate > $this->endTime) {
+                    $newDate = $this->startTime->modify('next day');
+                }
+
+                if ($newDate->modify($schedule) > $d) {
                     $dates[] = $newDate;
                 }
                 $d->modify($schedule);
