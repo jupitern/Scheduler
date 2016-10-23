@@ -24,7 +24,7 @@ Include jupitern/scheduler in your project, by adding it to your composer.json f
 // instance Scheduler
 $schedules = \Jupitern\Scheduler\Scheduler::instance()
 
-// limit events from 08.00 am to 17.00 pm
+// limit events from 08.00 am to 17.00
 ->setTimeFrame('08:00', '17:00')
 
 // add a one time event date
@@ -52,43 +52,51 @@ examples :
 
 $schedules = \Jupitern\Scheduler\Scheduler::instance()
     ->add('2030-01-01 12:35')
-    ->add('2030-01-01 16:50')
+    ->add('2030-01-01 14:50')
     ->addRecurring('+2 hours')
-    ->getNextSchedules('2016-01-01 00:00:00', 10);
+    ->getNextSchedules('2030-01-01 00:00:00', 10);
+
+foreach ($schedules as $schedule) {
+    echo $schedule->format('Y-m-d H:i').'<br/>';
+}
 
 /*
 output:
-2016-01-01 02:00
-2016-01-01 04:00
-2016-01-01 06:00
-2016-01-01 08:00
-2016-01-01 10:00
-2016-01-01 12:00
-2016-01-01 14:00
-2016-01-01 16:00
-2016-01-01 18:00
-2016-01-01 20:00
+2030-01-01 00:00
+2030-01-01 02:00
+2030-01-01 04:00
+2030-01-01 06:00
+2030-01-01 08:00
+2030-01-01 10:00
+2030-01-01 12:00
+2030-01-01 12:35
+2030-01-01 14:00
+2030-01-01 14:50
 */
 
 $schedules = \Jupitern\Scheduler\Scheduler::instance()
     ->setTimeFrame('08:00', '17:00')
     ->add('2030-01-01 12:35')
-    ->add('2030-01-01 16:50')
+    ->add('2030-01-01 14:50')
     ->addRecurring('+2 hours')
-    ->getNextSchedules('2016-01-01 00:00:00', 10);
+    ->getNextSchedules('2030-01-01 00:00:00', 10);
+
+foreach ($schedules as $schedule) {
+    echo $schedule->format('Y-m-d H:i').'<br/>';
+}
 
 /*
 output:
+2030-01-01 08:00
 2030-01-01 10:00
 2030-01-01 12:00
 2030-01-01 12:35
 2030-01-01 14:00
+2030-01-01 14:50
 2030-01-01 16:00
-2030-01-01 16:50
-2030-01-01 18:00
+2030-01-02 08:00
 2030-01-02 10:00
 2030-01-02 12:00
-2030-01-02 14:00
 */
 
 ```

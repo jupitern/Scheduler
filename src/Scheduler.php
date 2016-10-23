@@ -10,8 +10,8 @@ namespace Jupitern\Scheduler;
 
 class Scheduler {
 
-    private $schedules = array();
-    private $oneTimeEvents = array();
+    private $schedules = [];
+    private $oneTimeEvents = [];
     private $startTime = null;
     private $endTime = null;
 
@@ -89,35 +89,32 @@ class Scheduler {
     public function getNextSchedules( $fromDateStr = 'now', $limit = 5 )
     {
         $dates = array();
+        $fromDate = new \DateTime($fromDateStr);
+
         foreach ($this->oneTimeEvents as $evt) {
-            if ($this->isInTimeFrame($evt)) {
+            if ($this->isInTimeFrame($evt, $fromDateStr)) {
                 $dates[] = $evt;
             }
         }
+
         foreach ($this->schedules as $schedule) {
-            $d = new \DateTime($fromDateStr);
-            // check if current date is outside of defined time frame
-            if ($this->startTime instanceof \DateTime && $d < $this->startTime) {
-                $d = clone $this->startTime;
-            }
+            $d = $this->isInTimeFrame($fromDate, $fromDateStr) ?
+                clone $fromDate : clone $this->startTime->modify($fromDate->format('Y-m-d'));
+
+            $dates[] = clone $d;
 
             for ($i=0; $i < $limit; ++$i) {
-                $newDate = clone $d;
-
-                if ($newDate->modify($schedule) > $d) {
-                    $dates[] = $newDate;
-                }
                 $d->modify($schedule);
 
-                // check if current date is outside of defined time frame
-                if ($this->endTime instanceof \DateTime && $d > $this->endTime) {
-                    $this->startTime->modify('next day');
-                    $this->endTime->modify('next day');
-                    $d->modify('next day');
-                    $d = clone $this->startTime;
+                if ($this->isInTimeFrame($d, $fromDateStr)) {
+                    $dates[] = clone $d;
+                }
+                else {
+                    $dates[] = clone $d->modify("next day {$this->startTime->format('H:i')}");
                 }
             }
         }
+
         $this->orderDates($dates);
         return array_slice($dates, 0, $limit);
     }
@@ -136,8 +133,12 @@ class Scheduler {
     /**
      * @param \DateTime $date
      */
-    private function isInTimeFrame(\DateTime $date)
+    private function isInTimeFrame(\DateTime $date, $fromDateStr = 'now')
     {
+        if ($date < new \DateTime($fromDateStr)) {
+            return false;
+        }
+
         $dtStart = $this->startTime instanceof \DateTime ? $this->startTime->modify($date->format('Y-m-d')) : null;
         $dtEnd = $this->endTime instanceof \DateTime ? $this->endTime->modify($date->format('Y-m-d')) : null;
 
