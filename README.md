@@ -39,6 +39,9 @@ $schedules = \Jupitern\Scheduler\Scheduler::instance()
 // accepts any string compatible with php DateTime object
 ->addRecurring('+ 8 hours')
 
+// get next schedule starting at 2020-01-01
+->getNextSchedule('2020-01-01 00:00:00', 10);
+
 // get next 5 schedules starting at 2020-01-01
 ->getNextSchedules('2020-01-01 00:00:00', 10);
 
@@ -47,8 +50,10 @@ foreach ($schedules as $schedule) {
     echo $schedule->format('Y-m-d H:i')."<br/>";
 }
 
+```
 
-examples :
+## Examples
+```php
 
 $schedules = \Jupitern\Scheduler\Scheduler::instance()
     ->add('2030-01-01 12:35')

@@ -88,8 +88,7 @@ class Scheduler {
      */
     public function getNextSchedules( $fromDateStr = 'now', $limit = 5 )
     {
-        $dates = array();
-        $fromDate = new \DateTime($fromDateStr);
+        $dates = [];
 
         foreach ($this->oneTimeEvents as $evt) {
             if ($this->isInTimeFrame($evt, $fromDateStr)) {
@@ -98,19 +97,29 @@ class Scheduler {
         }
 
         foreach ($this->schedules as $schedule) {
-            $d = $this->isInTimeFrame($fromDate, $fromDateStr) ?
-                clone $fromDate : clone $this->startTime->modify($fromDate->format('Y-m-d'));
+            $d = new \DateTime($fromDateStr);
 
-            $dates[] = clone $d;
+            for ($i=0, $maxRecursion = 10 * $limit; $i < $limit && $maxRecursion > 0; ++$i, --$maxRecursion) {
 
-            for ($i=0; $i < $limit; ++$i) {
-                $d->modify($schedule);
-
-                if ($this->isInTimeFrame($d, $fromDateStr)) {
-                    $dates[] = clone $d;
+                if (strpos($schedule, '+') === false) {
+                    $d->modify($schedule);
+                    if ($this->isInTimeFrame($d, $fromDateStr)) {
+                        $dates[] = clone $d;
+                    }
                 }
                 else {
-                    $dates[] = clone $d->modify("next day {$this->startTime->format('H:i')}");
+                    if ($this->startTime instanceof \DateTime && $d < $this->startTime->modify($d->format('Y-m-d'))) {
+                        $d->modify($this->startTime->format('H:i:s'));
+                    }
+
+                    if ($this->endTime instanceof \DateTime && $d > $this->endTime->modify($d->format('Y-m-d'))) {
+                        $d->modify("next day 00:00:00");
+                    }
+
+                    if ($this->isInTimeFrame($d, $fromDateStr)) {
+                        $dates[] = clone $d;
+                    }
+                    $d->modify($schedule);
                 }
             }
         }
