@@ -1,3 +1,9 @@
+[![Build Status](https://scrutinizer-ci.com/g/jupitern/Scheduler/badges/build.png?b=master)](https://scrutinizer-ci.com/g/jupitern/Scheduler/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jupitern/Scheduler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jupitern/Scheduler/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/jupitern/scheduler/v/stable)](https://packagist.org/packages/jupitern/scheduler)
+[![Latest Unstable Version](https://poser.pugx.org/jupitern/scheduler/v/unstable)](https://packagist.org/packages/jupitern/scheduler)
+[![License](https://poser.pugx.org/jupitern/scheduler/license)](https://packagist.org/packages/jupitern/scheduler)
+
 # jupitern/scheduler
 #### PHP Scheduler.
 
