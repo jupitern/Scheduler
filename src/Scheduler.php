@@ -32,10 +32,10 @@ class Scheduler {
      */
     public function setTimeFrame( $startTime = null, $endTime = null )
     {
-        if ($startTime != null && !empty($startTime)) {
+        if ($startTime !== null && !empty($startTime)) {
             $this->startTime = new \DateTime($startTime);
         }
-        if ($endTime != null && !empty($endTime)) {
+        if ($endTime !== null && !empty($endTime)) {
             $this->endTime = new \DateTime($endTime);
         }
 
@@ -144,9 +144,6 @@ class Scheduler {
         if ($date < new \DateTime($fromDateStr)) {
             return false;
         }
-
-        $dtStart = $this->startTime instanceof \DateTime ? $this->startTime->modify($date->format('Y-m-d')) : null;
-        $dtEnd = $this->endTime instanceof \DateTime ? $this->endTime->modify($date->format('Y-m-d')) : null;
 
         if ($this->startTime && $date < $this->startTime->modify($date->format('Y-m-d'))) {
             return false;
