@@ -27,8 +27,8 @@ class Scheduler {
     /**
      * set a time frame in which events will occur
      *
-     * @param string $startTime \Datetime start time string compatible with php Datetime class. example: '08:00'
-     * @param string $endTime \Datetime end time string compatible with php Datetime class. example: '17:00'
+     * @param string $startTime time string compatible with \Datetime object. example: '08:00'
+     * @param string $endTime time string compatible with \Datetime object. example: '17:00'
      */
     public function setTimeFrame( $startTime = null, $endTime = null )
     {
@@ -46,18 +46,18 @@ class Scheduler {
     /**
      * add a one time occurring date
      *
-     * @param string $dateTimeStr \Datetime object valid date string
+     * @param string $dateTimeStr date string compatible with \Datetime object
      */
     public function add( $dateTimeStr )
     {
-        $this->oneTimeEvents[] = new \DateTime($dateTimeStr);
+        $this->oneTimeEvents[] = $dateTimeStr;
         return $this;
     }
 
     /**
      * add a recurring date
      *
-     * @param string $dateTimeStr \Datetime object valid date string
+     * @param string $dateTimeStr date string compatible with \Datetime object
      */
     public function addRecurring( $dateTimeStr )
     {
@@ -69,7 +69,7 @@ class Scheduler {
     /**
      * get next schedule date
      *
-     * @param string $fromDateStr \Datetime object valid date string
+     * @param string $fromDateStr date string compatible with \Datetime object
      * @return \Datetime or null
      */
     public function getNextSchedule( $fromDateStr = 'now' )
@@ -82,7 +82,7 @@ class Scheduler {
     /**
      * get a number of next schedule dates
      *
-     * @param string $fromDateStr \Datetime object valid date string
+     * @param string $fromDateStr date string compatible with \Datetime object
      * @param int $limit number of dates to return
      * @return array
      */
@@ -90,9 +90,12 @@ class Scheduler {
     {
         $dates = [];
 
-        foreach ($this->oneTimeEvents as $evt) {
-            if ($this->isInTimeFrame($evt, $fromDateStr)) {
-                $dates[] = $evt;
+        foreach ($this->oneTimeEvents as $schedule) {
+			$dt = new \DateTime($fromDateStr);
+			$dt->modify($schedule);
+			
+            if ($this->isInTimeFrame($dt, $fromDateStr)) {
+                $dates[] = $dt;
             }
         }
 
@@ -101,7 +104,7 @@ class Scheduler {
 
             for ($i=0, $maxRecursion = 100 * $limit; $i < $limit && $maxRecursion > 0; ++$i, --$maxRecursion) {
 
-                if (strpos($schedule, '+') !== false) {
+                if ($this->isDateRelative($schedule)) {
                     if ($this->startTime instanceof \DateTime && $d < $this->startTime->modify($d->format('Y-m-d'))) {
                         $d->modify($this->startTime->format('H:i:s'));
                     }
@@ -128,6 +131,7 @@ class Scheduler {
 
     /**
      * @param array $dates
+	 * @return array
      */
     private function orderDates( &$dates )
     {
@@ -138,6 +142,7 @@ class Scheduler {
 
     /**
      * @param \DateTime $date
+	 * @return bool
      */
     private function isInTimeFrame(\DateTime $date, $fromDateStr = 'now')
     {
@@ -154,5 +159,14 @@ class Scheduler {
 
         return true;
     }
+
+	/**
+	 * @param string $dateStr \Datetime object valid date string
+	 * @return bool
+	 */
+	private function isDateRelative($dateStr)
+	{
+		return strpos($dateStr, '+') !== false;
+	}
 
 }

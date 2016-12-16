@@ -110,7 +110,32 @@ output:
 2030-01-02 12:00
 */
 
+
+$schedules = \Jupitern\Scheduler\Scheduler::instance()
+    ->setTimeFrame('08:30', '19:00')
+    ->add('+10 minutes')
+    ->add('+30 minutes')	// outside time frame. will not produce any schedule
+    ->add('next day 08:30')
+    ->getNextSchedules('2000-12-16 18:40');
+
+foreach ($schedules as $schedule) {
+    echo $schedule->format('Y-m-d H:i')."<br/>";
+}
+
+/*
+output:
+2000-12-16 18:50
+2000-12-17 08:30
+*/
+
 ```
+
+## ChangeLog
+
+v1.3
+
+ - Changed method add to allow relative one time events like "+1 hour" or "next day 17:00"
+ - relative events added with method add() are relative to $fromStartDate and obey time frame if set
 
 ## Contributing
 
