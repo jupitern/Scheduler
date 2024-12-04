@@ -132,6 +132,13 @@ output:
 
 ## ChangeLog
 
+v1.4
+
+- min php version updated to 8.0
+- code refactor for php 8
+- bug fix to avoid duplicate dates when calculated dates from different schedules match 
+
+
 v1.3
 
  - Changed method add to allow relative one time events like "+1 hour" or "next day 17:00"

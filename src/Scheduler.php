@@ -2,18 +2,12 @@
 
 namespace Jupitern\Scheduler;
 
-/*
- * Simple Scheduler class
- *
- * Author: Nuno Chaves
- * */
-
 class Scheduler {
 
-    private $schedules = [];
-    private $oneTimeEvents = [];
-    private $startTime = null;
-    private $endTime = null;
+    private array $schedules = [];
+    private array $oneTimeEvents = [];
+    private \DateTime|null $startTime = null;
+    private \DateTime|null $endTime = null;
 
     /**
      * @return static
@@ -27,15 +21,17 @@ class Scheduler {
     /**
      * set a time frame in which events will occur
      *
-     * @param string $startTime time string compatible with \Datetime object. example: '08:00'
-     * @param string $endTime time string compatible with \Datetime object. example: '17:00'
+     * @param string|null $startTime time string compatible with \Datetime object. example: '08:00'
+     * @param string|null $endTime time string compatible with \Datetime object. example: '17:00'
+     * @return Scheduler
+     * @throws \Exception
      */
-    public function setTimeFrame( $startTime = null, $endTime = null )
+    public function setTimeFrame(string $startTime = null, string $endTime = null): self
     {
-        if ($startTime !== null && !empty($startTime)) {
+        if (!empty($startTime)) {
             $this->startTime = new \DateTime($startTime);
         }
-        if ($endTime !== null && !empty($endTime)) {
+        if (!empty($endTime)) {
             $this->endTime = new \DateTime($endTime);
         }
 
@@ -48,7 +44,7 @@ class Scheduler {
      *
      * @param string $dateTimeStr date string compatible with \Datetime object
      */
-    public function add( $dateTimeStr )
+    public function add(string $dateTimeStr): self
     {
         $this->oneTimeEvents[] = $dateTimeStr;
         return $this;
@@ -59,7 +55,7 @@ class Scheduler {
      *
      * @param string $dateTimeStr date string compatible with \Datetime object
      */
-    public function addRecurring( $dateTimeStr )
+    public function addRecurring(string $dateTimeStr): self
     {
         $this->schedules[] = $dateTimeStr;
         return $this;
@@ -70,9 +66,9 @@ class Scheduler {
      * get next schedule date
      *
      * @param string $fromDateStr date string compatible with \Datetime object
-     * @return \Datetime or null
+     * @return \Datetime|null or null
      */
-    public function getNextSchedule( $fromDateStr = 'now' )
+    public function getNextSchedule(string $fromDateStr = 'now'): ?\Datetime
     {
         $dates = $this->getNextSchedules($fromDateStr, 1);
         return count($dates) ? $dates[0] : null;
@@ -86,16 +82,16 @@ class Scheduler {
      * @param int $limit number of dates to return
      * @return array
      */
-    public function getNextSchedules( $fromDateStr = 'now', $limit = 5 )
+    public function getNextSchedules(string $fromDateStr = 'now', int $limit = 5): array
     {
         $dates = [];
 
         foreach ($this->oneTimeEvents as $schedule) {
-			$dt = new \DateTime($fromDateStr);
-			$dt->modify($schedule);
-			
+            $dt = new \DateTime($fromDateStr);
+            $dt->modify($schedule);
+
             if ($this->isInTimeFrame($dt, $fromDateStr)) {
-                $dates[] = $dt;
+                $dates[$dt->format('YmdHis')] = $dt;
             }
         }
 
@@ -112,11 +108,15 @@ class Scheduler {
                         $d->modify('next day')->modify($this->startTime->format('H:i:s'));
                     }
 
-                    $dates[] = clone $d;
+                    if (!array_key_exists($d->format('YmdHis'), $dates)) {
+                        $dates[$d->format('YmdHis')] = clone $d;
+                    }
                     $d->modify($schedule);
                 }
                 elseif ($this->isInTimeFrame($d->modify($schedule), $fromDateStr)) {
-                    $dates[] = clone $d;
+                    if (!array_key_exists($d->format('YmdHis'), $dates))  {
+                        $dates[$d->format('YmdHis')] = clone $d;
+                    }
                 }
                 else {
                     --$i;
@@ -131,9 +131,9 @@ class Scheduler {
 
     /**
      * @param array $dates
-	 * @return array
+     * @return void
      */
-    private function orderDates( &$dates )
+    private function orderDates(array &$dates): void
     {
         uasort($dates, function($a, $b) {
             return strtotime($a->format('Y-m-d H:i:s')) > strtotime($b->format('Y-m-d H:i:s')) ? 1 : -1;
@@ -142,9 +142,9 @@ class Scheduler {
 
     /**
      * @param \DateTime $date
-	 * @return bool
+     * @return bool
      */
-    private function isInTimeFrame(\DateTime $date, $fromDateStr = 'now')
+    private function isInTimeFrame(\DateTime $date, string $fromDateStr = 'now'): bool
     {
         if ($date < new \DateTime($fromDateStr)) {
             return false;
@@ -160,13 +160,13 @@ class Scheduler {
         return true;
     }
 
-	/**
-	 * @param string $dateStr \Datetime object valid date string
-	 * @return bool
-	 */
-	private function isDateRelative($dateStr)
-	{
-		return strpos($dateStr, '+') !== false;
-	}
+    /**
+     * @param string $dateStr \Datetime object valid date string
+     * @return bool
+     */
+    private function isDateRelative(string $dateStr): bool
+    {
+        return str_contains($dateStr, '+');
+    }
 
 }
