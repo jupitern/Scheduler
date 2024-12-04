@@ -1,3 +1,5 @@
+.env
+
 # temp files from editors
 *~
 *.bak

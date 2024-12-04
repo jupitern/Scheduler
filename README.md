@@ -12,7 +12,7 @@ get next event date or next X event dates from a given date
 
 ## Requirements
 
-PHP 5.4 or higher.
+PHP 8.0 or higher.
 
 ## Installation
 
