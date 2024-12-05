@@ -87,11 +87,12 @@ class Scheduler {
         $dates = [];
 
         foreach ($this->oneTimeEvents as $schedule) {
-            $dt = new \DateTime($fromDateStr);
-            $dt->modify($schedule);
+            if ($schedule == 'now') $schedule = '+1 second';
+            $d = new \DateTime($fromDateStr);
+            $d->modify($schedule);
 
-            if ($this->isInTimeFrame($dt, $fromDateStr)) {
-                $dates[$dt->format('YmdHis')] = $dt;
+            if ($this->isInTimeFrame($d, $fromDateStr)) {
+                $dates[$d->format('YmdHis')] = clone $d;
             }
         }
 
@@ -99,14 +100,13 @@ class Scheduler {
             $d = new \DateTime($fromDateStr);
 
             for ($i=0, $maxRecursion = 100 * $limit; $i < $limit && $maxRecursion > 0; ++$i, --$maxRecursion) {
-
                 if ($this->isDateRelative($schedule)) {
+                    $d->modify($schedule);
+
                     if ($this->startTime instanceof \DateTime && $d < $this->startTime->modify($d->format('Y-m-d'))) {
                         $d->modify($this->startTime->format('H:i:s'));
                     } elseif ($this->endTime instanceof \DateTime && $d > $this->endTime->modify($d->format('Y-m-d'))) {
                         $d->modify('next day')->modify($this->startTime->format('H:i:s'));
-                    } else {
-                        $d->modify($schedule);
                     }
 
                     if (!array_key_exists($d->format('YmdHis'), $dates)) {
@@ -124,6 +124,7 @@ class Scheduler {
         }
 
         $this->orderDates($dates);
+
         return array_slice($dates, 0, $limit);
     }
 
@@ -135,7 +136,7 @@ class Scheduler {
     private function orderDates(array &$dates): void
     {
         uasort($dates, function($a, $b) {
-            return strtotime($a->format('Y-m-d H:i:s')) > strtotime($b->format('Y-m-d H:i:s')) ? 1 : -1;
+            return strtotime($a->format('Y-m-d H:i:s')) - strtotime($b->format('Y-m-d H:i:s'));
         });
     }
 
