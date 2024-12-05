@@ -103,22 +103,21 @@ class Scheduler {
                 if ($this->isDateRelative($schedule)) {
                     if ($this->startTime instanceof \DateTime && $d < $this->startTime->modify($d->format('Y-m-d'))) {
                         $d->modify($this->startTime->format('H:i:s'));
-                    }
-                    elseif ($this->endTime instanceof \DateTime && $d > $this->endTime->modify($d->format('Y-m-d'))) {
+                    } elseif ($this->endTime instanceof \DateTime && $d > $this->endTime->modify($d->format('Y-m-d'))) {
                         $d->modify('next day')->modify($this->startTime->format('H:i:s'));
+                    } else {
+                        $d->modify($schedule);
                     }
 
                     if (!array_key_exists($d->format('YmdHis'), $dates)) {
                         $dates[$d->format('YmdHis')] = clone $d;
                     }
-                    $d->modify($schedule);
-                }
-                elseif ($this->isInTimeFrame($d->modify($schedule), $fromDateStr)) {
+
+                } elseif ($this->isInTimeFrame($d->modify($schedule), $fromDateStr)) {
                     if (!array_key_exists($d->format('YmdHis'), $dates))  {
                         $dates[$d->format('YmdHis')] = clone $d;
                     }
-                }
-                else {
+                } else {
                     --$i;
                 }
             }
