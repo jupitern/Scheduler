@@ -2,12 +2,14 @@
 
 namespace Jupitern\Scheduler;
 
+use \DateTime;
+
 class Scheduler {
 
     private array $schedules = [];
     private array $oneTimeEvents = [];
-    private \DateTime|null $startTime = null;
-    private \DateTime|null $endTime = null;
+    private ?DateTime $startTime = null;
+    private ?DateTime $endTime = null;
 
     /**
      * @return static
@@ -26,7 +28,7 @@ class Scheduler {
      * @return Scheduler
      * @throws \Exception
      */
-    public function setTimeFrame(string $startTime = null, string $endTime = null): self
+    public function setTimeFrame(?string $startTime = null, ?string $endTime = null): self
     {
         if (!empty($startTime)) {
             $this->startTime = new \DateTime($startTime);

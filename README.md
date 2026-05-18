@@ -12,17 +12,13 @@ get next event date or next X event dates from a given date
 
 ## Requirements
 
-PHP 8.0 or higher.
+PHP 8.3 or higher.
 
 ## Installation
 
 Include jupitern/scheduler in your project, by adding it to your composer.json file.
-```javascript
-{
-    "require": {
-        "jupitern/scheduler": "1.*"
-    }
-}
+```bash
+composer require jupitern/scheduler
 ```
 
 ## Usage
@@ -131,6 +127,10 @@ output:
 ```
 
 ## ChangeLog
+
+v1.5
+
+- min php version updated to 8.3
 
 v1.4
 
