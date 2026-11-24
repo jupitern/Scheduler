@@ -16,7 +16,7 @@ class Scheduler {
      */
     public static function instance()
     {
-        return new static();
+        return new self();
     }
 
 
